@@ -4,7 +4,11 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      transformOrigin: {
+        'top-left-1/2-3/2': '50% 50%',
+      }
+    },
   },
   plugins: [],
 }

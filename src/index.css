@@ -19,7 +19,7 @@ code {
 
 .bg-gradient-to-r.from-\[\#c850c0\].to-\[\#4158d0\].min-h-\[100vh\].h-full.sidebars {
   position: fixed;
-  width: 25%;
+  width: 16.666667%;
 }
 
 @tailwind base;

@@ -4,43 +4,35 @@ import logins from "../../assets/image/img-01.webp";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate  } from 'react-router-dom';
-
+import { API } from "../../config/Api";
 import { toast } from "react-toastify";
-
 function Login() {
-  const [username, setUsername] = useState("");
+  const [EmailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const navigate = useNavigate ();
 
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      // Construct the API URL with query parameters
-      const apiUrl = `http://v01.kerne.org:500/pbx/pbx001/webapi/?module=apiLogin&username=${username}&password=${password}`;
-
-      // Send a GET request to the API using Axios
-      const response = await axios.get(apiUrl);
-      if (response.data.status == 'OK' ) {
-        // Successful login
-        toast.success(response.data.message);
-        setToken(response.data.token)
-         localStorage.setItem('token', response.data.token );
-        navigate('/dashboard', { token: response.data.token });
-      } else {
-        // Handle login failure
-        toast.error(response.data.message);
-      }
-    } catch (error) {
-      // Handle network or other errors
-      console.error("Error:", error);
+  const handleLoginForm=()=>{
+    if (EmailAddress == "" && password == "" ){
+      toast.error("Please enter Email and Password", {autoClose:1000});
     }
-  };
+    else {
+      const formData = new FormData();
+      formData.append("email", EmailAddress);
+      formData.append("password", password);
+      axios.post(API.BASE_URL+"/login", formData)
+      .then((response)=>{
+        localStorage.setItem("Token", response)
+        toast.success("Login SuccessFull!",{autoClose:1000});
+        navigate("/dashboard");
+      }).catch((error)=>{
+        toast.error("Error Occured", {autoClose:1000});
+      })
+    }
+  }
   return (
     <div className=" bg-gradient-to-r from-[#c850c0] to-[#4158d0] min-h-[100vh] h-full  pt-12">
-      <div className="grid grid-cols-12 gap-8 w-[960px] mx-auto bg-[#fff] p-6 rounded-lg">
+      <div className="grid grid-cols-12 gap-8 w-[960px] mx-auto bg-[#fff] p-6 rounded-lg origin-top-left-1/2-3/2 absolute top-[50%] left-[50%]">
         <div className="col-span-12 md:col-span-6">
           <img src='http://zp04.kerne.org/webpanel/static/media/img-01.4ed7df3a303c99050d13.webp' alt="login page" className="mx-auto my-12" />
         </div>
@@ -49,13 +41,13 @@ function Login() {
             <p className="text-center text-2xl font-semibold my-8">
               Login Form
             </p>
-            <form onSubmit={handleSubmit}>
+            <form>
               <div className="grid grid-cols-1 gap-4">
                 <Input
-                  type="text"
-                  label="UserName"
-                  name="username"
-                  onChange={(e) => setUsername(e.target.value)}
+                  type="email"
+                  label="Email"
+                  name="Email"
+                  onChange={(e) => setEmailAddress(e.target.value)}
                   placeholder=""
                 />
                 <Input
@@ -74,7 +66,7 @@ function Login() {
                   type="submit"
                   className="bg-[#57b846] mt-3 text-[#fff] py-3 px-12 text-lg mx-auto rounded-[25px]"
                 >
-                  Sign In
+                  <Link onClick={handleLoginForm}>Sign In </Link>
                 </button>
               </div>
             </form>
